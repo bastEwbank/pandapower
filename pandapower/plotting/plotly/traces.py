@@ -692,8 +692,8 @@ def _create_branch_trace(net, branches=None, use_branch_geodata=True, respect_se
             geo_str=net[node_element].loc[net[branch_element][f"from_{node_element}"][net[branch_element].index[0]], "geo"]
             geo_obj = geojson.loads(geo_str)
             x, y = next(geojson.utils.coords(geo_obj))
-
-            branches_cbar = dict(type='scatter', x=x, y=y, mode='markers',
+          
+            branches_cbar = dict(type='scatter', x=[x], y=[y], mode='markers',
                                  marker=Marker(size=0, cmin=cmin, cmax=cmax,
                                                color='rgb(255,255,255)',
                                                opacity=0,
