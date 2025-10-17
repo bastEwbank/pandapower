@@ -62,7 +62,7 @@ class SynchronousMachinesCim16:
         eq_generating_units['type'] = eq_generating_units['type'].fillna('Nuclear')
         eq_generating_units = eq_generating_units.rename(columns={'rdfId': 'GeneratingUnit'})
 
-        if 'sc' in self.cimConverter.cim.keys():
+        if 'sc' in self.cimConverter.cim:
             synchronous_machines = self.cimConverter.merge_eq_other_profiles(
                 ['ssh', 'sc'], 'SynchronousMachine', add_cim_type_column=True)
         else:
@@ -147,12 +147,15 @@ class SynchronousMachinesCim16:
         synchronous_machines['generator_type'] = 'current_source'
         synchronous_machines.loc[synchronous_machines['referencePriority'] == 0, 'referencePriority'] = float('NaN')
         synchronous_machines['referencePriority'] = synchronous_machines['referencePriority'].astype(float)
+        synchronous_machines['slack_weight'] = synchronous_machines['referencePriority'][:]
+        synchronous_machines['RegulatingControl.enabled'] = synchronous_machines['enabled'][:]
+        synchronous_machines['RegulatingControl.mode'] = synchronous_machines['mode'][:]
         if 'inService' in synchronous_machines.columns:
             synchronous_machines['connected'] = (synchronous_machines['connected'] & synchronous_machines['inService'])
         synchronous_machines = synchronous_machines.rename(columns={
             'rdfId_Terminal': sc['t'], 'rdfId': sc['o_id'], 'connected': 'in_service', 'index_bus': 'bus',
             'minOperatingP': 'min_p_mw', 'maxOperatingP': 'max_p_mw', 'minQ': 'min_q_mvar', 'maxQ': 'max_q_mvar',
-            'ratedPowerFactor': 'cos_phi', 'referencePriority': 'slack_weight'})
+            'ratedPowerFactor': 'cos_phi', 'targetValue': 'RegulatingControl.targetValue'})
         return synchronous_machines
 
     def _create_gen_characteristics_table(self, syn_gen_df_origin) -> pd.DataFrame:
@@ -160,7 +163,7 @@ class SynchronousMachinesCim16:
         if not eq['ReactiveCapabilityCurve'].empty and not eq['CurveData'].empty:
             if 'id_q_capability_characteristic' not in syn_gen_df_origin.columns:
                     syn_gen_df_origin['id_q_capability_characteristic'] = float('NaN')
-            if 'q_capability_curve_table' not in self.cimConverter.net.keys():
+            if 'q_capability_curve_table' not in self.cimConverter.net:
                 self.cimConverter.net['q_capability_curve_table'] = pd.DataFrame(
                     columns=['id_capability_curve', 'p_mw', 'q_min_mvar', 'q_max_mvar'])
 

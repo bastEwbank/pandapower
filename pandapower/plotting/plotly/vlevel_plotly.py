@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 def vlevel_plotly(net, respect_switches=True, use_line_geo=None, colors_dict=None, on_map=False,
                   projection=None, map_style='basic', figsize=1, aspectratio='auto', line_width=2,
-                  bus_size=10, filename="temp-plot.html", auto_open=True,zoomlevel=11):
+                  bus_size=10, filename="temp-plot.html", auto_open=True, zoomlevel=11):
     """
     Plots a pandapower network in plotly
     using lines/buses colors according to the voltage level they belong to.
@@ -81,7 +81,7 @@ def vlevel_plotly(net, respect_switches=True, use_line_geo=None, colors_dict=Non
         **figure** (graph_objs._figure.Figure) figure object
 
     """
-    # getting connected componenets without consideration of trafos
+    # getting connected components without consideration of trafos
     graph = create_nxgraph(net, include_trafos=False)
     vlev_buses = connected_components(graph)
     # getting unique sets of buses for each voltage level
@@ -223,7 +223,7 @@ if __name__ == '__main__':
                               net.line.to_bus.isin(buses_vl)].index.tolist()
         print(vlev_lines)
         line_trace_vlev = create_line_trace(
-            net, lines=vlev_lines, use_line_geodata=use_line_geodata,
+            net, lines=vlev_lines, use_line_geo=use_line_geodata,
             respect_switches=respect_switches, legendgroup=str(vn_kv), color="r",
             width=line_width, trace_name='lines {0} kV'.format(vn_kv))
         if line_trace_vlev is not None:
