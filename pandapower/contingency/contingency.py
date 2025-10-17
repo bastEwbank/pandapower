@@ -493,7 +493,7 @@ def _log_violation(element, var, val, limit_index, mask):
         s = ' (N-1)' if 'max' in var else ''
         with np.printoptions(precision=3, suppress=True):
             logger.info(f"{element}: {var}{s} violation at index {limit_index[mask]} ({val[mask]})")
-
+            print(f"{element}: {var}{s} violation at index {limit_index[mask]} ({val[mask]})")
 
 def report_contingency_results(element_limits, contingency_results, branch_tol=1e-3, bus_tol=1e-6):
     """
